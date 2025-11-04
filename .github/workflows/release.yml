@@ -2,6 +2,9 @@ name: Release Build
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   build-release:
@@ -36,11 +39,15 @@ jobs:
         run: |
           echo ${{ secrets.SIGNING_PROPERTIES }} > encoded_signing_properties
           base64 -Dd -i encoded_signing_properties > signing.properties
+          echo "Generated signing.properties content:"
+          cat signing.properties
 
       - name: Add jks file
         run: |
           echo ${{ secrets.SIGN_KEY }} > ./encoded_key
           base64 -Dd -i encoded_key > key.jks
+          echo "Generated key.jks file size:"
+          ls -la key.jks
 
       - name: Build apk
         run: ./gradlew assembleDefaultRelease assembleDefaultDebug
