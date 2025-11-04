@@ -37,25 +37,13 @@ jobs:
         env:
           SIGNING_PROPERTIES: ${{ secrets.SIGNING_PROPERTIES }}
         run: |
-          echo "SIGNING_PROPERTIES length: ${#SIGNING_PROPERTIES}"
-          echo "$SIGNING_PROPERTIES" > encoded_signing_properties
-          echo "Encoded file size:"
-          ls -la encoded_signing_properties
+          echo ${{ secrets.SIGNING_PROPERTIES }} > encoded_signing_properties
           base64 -Dd -i encoded_signing_properties > signing.properties
-          echo "Generated signing.properties content:"
-          cat signing.properties
 
       - name: Add jks file
-        env:
-          SIGN_KEY: ${{ secrets.SIGN_KEY }}
         run: |
-          echo "SIGN_KEY length: ${#SIGN_KEY}"
-          echo "$SIGN_KEY" > ./encoded_key
-          echo "Encoded key file size:"
-          ls -la encoded_key
+          echo ${{ secrets.SIGN_KEY }} > ./encoded_key
           base64 -Dd -i encoded_key > key.jks
-          echo "Generated key.jks file size:"
-          ls -la key.jks
 
       - name: Build apk
         run: ./gradlew assembleDefaultRelease assembleDefaultDebug
